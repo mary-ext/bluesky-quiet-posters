@@ -107,6 +107,7 @@ a:hover {
 	color: LinkText;
 	font-weight: 700;
 	font-size: 16px;
+	line-height: 1.25;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
