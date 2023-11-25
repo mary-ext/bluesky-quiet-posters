@@ -116,7 +116,18 @@ a:hover {
 }
 
 .profile-subinfo {
+	display: flex;
+	min-width: 0;
 	color: color-mix(in srgb, CanvasText, transparent 40%);
+}
+.profile-handle {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.profile-activity {
+	flex-shrink: 0;
+	white-space: nowrap;
 }
 
 .dot {
