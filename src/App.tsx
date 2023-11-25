@@ -1,7 +1,7 @@
 import { For, createSignal } from 'solid-js';
 
 import { Agent } from '@externdefs/bluesky-client/agent';
-import type { DID, RefOf } from '@externdefs/bluesky-client/atp-schema';
+import type { RefOf } from '@externdefs/bluesky-client/atp-schema';
 
 import { formatAbsDateTime, formatReltime } from './intl.ts';
 
@@ -10,12 +10,7 @@ import defaultAvatar from './assets/default-avatar.svg';
 const agent = new Agent({ serviceUri: 'https://api.bsky.app' });
 
 interface ProfileActivity {
-	profile: {
-		did: DID;
-		handle: string;
-		displayName?: string;
-		avatar?: string;
-	};
+	profile: RefOf<'app.bsky.actor.defs#profileView'>;
 	// activityCount: number;
 	lastActivity: number | undefined;
 }
@@ -66,7 +61,7 @@ const App = () => {
 				params: {
 					actor: profile.did,
 					// limit: ACTIVITY_LIMIT + 1,
-					limit: 2,
+					limit: 1,
 				},
 			});
 
