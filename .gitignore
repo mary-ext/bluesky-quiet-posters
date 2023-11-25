@@ -1,5 +1,6 @@
 node_modules/
 dist/
+deploy/
 
 .npm-*.log
 .pnpm-*.log
