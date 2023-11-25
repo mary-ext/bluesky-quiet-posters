@@ -71,6 +71,7 @@ a:hover {
 
 .message-info {
 	margin-bottom: 16px;
+	overflow-wrap: break-word;
 }
 .message-info:empty {
 	display: none;
