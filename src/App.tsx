@@ -97,7 +97,7 @@ const App = () => {
 			setActivities(acts);
 		}
 
-		setMessage(`Done.`);
+		setMessage(undefined);
 	};
 
 	const handleSubmit = (ev: SubmitEvent) => {
