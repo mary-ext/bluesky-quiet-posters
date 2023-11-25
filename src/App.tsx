@@ -3,7 +3,7 @@ import { For, createSignal } from 'solid-js';
 import { Agent } from '@externdefs/bluesky-client/agent';
 import type { DID, RefOf } from '@externdefs/bluesky-client/atp-schema';
 
-import { formatReltime } from './intl.ts';
+import { formatAbsDateTime, formatReltime } from './intl.ts';
 
 import defaultAvatar from './assets/default-avatar.svg';
 
@@ -157,9 +157,16 @@ const App = () => {
 									<div class="profile-subinfo">
 										<span class="profile-handle">@{/* @once */ profile.handle}</span>
 										<span class="dot">·</span>
-										<span class="profile-activity">
-											{/* @once */ lastActivity !== undefined ? formatReltime(lastActivity) : 'no activity'}
-										</span>
+
+										{
+											/* @once */ lastActivity !== undefined ? (
+												<span title={/* @once */ formatAbsDateTime(lastActivity)} class="profile-activity">
+													{/* @once */ formatReltime(lastActivity)}
+												</span>
+											) : (
+												<span class="profile-activity is-empty">no activity</span>
+											)
+										}
 									</div>
 								</div>
 							</a>
