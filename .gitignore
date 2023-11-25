@@ -1,4 +1,6 @@
+.vite/
 node_modules/
+
 dist/
 deploy/
 
