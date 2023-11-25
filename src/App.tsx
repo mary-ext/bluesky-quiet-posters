@@ -16,11 +16,11 @@ interface ProfileActivity {
 		displayName?: string;
 		avatar?: string;
 	};
-	activityCount: number;
+	// activityCount: number;
 	lastActivity: number | undefined;
 }
 
-const ACTIVITY_LIMIT = 20;
+// const ACTIVITY_LIMIT = 20;
 const EMPTY_ARRAY: never[] = [];
 
 const sortProfileActivities = (a: ProfileActivity, b: ProfileActivity) => {
@@ -65,14 +65,15 @@ const App = () => {
 				signal: signal,
 				params: {
 					actor: profile.did,
-					limit: ACTIVITY_LIMIT + 1,
+					// limit: ACTIVITY_LIMIT + 1,
+					limit: 2,
 				},
 			});
 
 			const feed = response.data.feed;
-			const now = new Date();
+			// const now = new Date();
 
-			let activityCount = 0;
+			// let activityCount = 0;
 			let lastActivity: number | undefined;
 
 			for (let idx = 0, len = feed.length; idx < len; idx++) {
@@ -80,18 +81,22 @@ const App = () => {
 
 				const date = new Date(reason ? reason.indexedAt : post.indexedAt);
 
-				if (
-					now.getDate() === date.getDate() &&
-					now.getMonth() === date.getMonth() &&
-					now.getFullYear() === date.getFullYear()
-				) {
-					activityCount++;
-				}
+				// if (
+				// 	now.getDate() === date.getDate() &&
+				// 	now.getMonth() === date.getMonth() &&
+				// 	now.getFullYear() === date.getFullYear()
+				// ) {
+				// 	activityCount++;
+				// }
 
 				lastActivity ??= date.getTime();
 			}
 
-			acts = acts.concat({ profile: profile, activityCount: activityCount, lastActivity: lastActivity });
+			acts = acts.concat({
+				profile: profile,
+				// activityCount: activityCount,
+				lastActivity: lastActivity,
+			});
 			acts.sort(sortProfileActivities);
 
 			setActivities(acts);
