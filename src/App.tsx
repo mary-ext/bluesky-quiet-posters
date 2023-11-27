@@ -150,7 +150,11 @@ const App = () => {
 
 						return (
 							<a href={url} target="_blank" class="profile">
-								<img src={/* @once */ profile.avatar || defaultAvatar} class="profile-avatar" />
+								<img
+									src={/* @once */ profile.avatar || defaultAvatar}
+									loading="lazy"
+									class="profile-avatar"
+								/>
 
 								<div class="profile-info">
 									<p class="profile-name">{/* @once */ profile.displayName || `@${profile.handle}`}</p>
