@@ -127,7 +127,8 @@ a:hover {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-.profile-activity {
+.profile-activity,
+.profile-mutuals {
 	flex-shrink: 0;
 	white-space: nowrap;
 }

@@ -11,6 +11,7 @@ const agent = new Agent({ serviceUri: 'https://api.bsky.app' });
 
 interface ProfileActivity {
 	profile: RefOf<'app.bsky.actor.defs#profileView'>;
+	mutuals: boolean;
 	// activityCount: number;
 	lastActivity: number | undefined;
 }
@@ -29,25 +30,75 @@ const App = () => {
 	const [activities, setActivities] = createSignal<ProfileActivity[]>(EMPTY_ARRAY);
 
 	const go = async (handle: string, signal: AbortSignal) => {
+		let did: string;
 		let follows: RefOf<'app.bsky.actor.defs#profileView'>[] = [];
-		let followCursor: string | undefined;
+		let mutuals = new Set<string>();
 
-		do {
-			setMessage(`Retrieving your follows (${follows.length} users)`);
+		if (handle.startsWith('did:')) {
+			did = handle;
+		} else {
+			setMessage(`Resolving your handle`);
 
-			const response = await agent.rpc.get('app.bsky.graph.getFollows', {
+			const response = await agent.rpc.get('com.atproto.identity.resolveHandle', {
 				signal: signal,
 				params: {
-					actor: handle,
-					cursor: followCursor,
+					handle: handle,
 				},
 			});
 
-			const data = response.data;
+			did = response.data.did;
+		}
 
-			follows = follows.concat(data.follows);
-			followCursor = data.cursor;
-		} while (followCursor !== undefined);
+		{
+			let followCursor: string | undefined;
+
+			do {
+				setMessage(`Retrieving your follows (${follows.length} users)`);
+
+				const response = await agent.rpc.get('app.bsky.graph.getFollows', {
+					signal: signal,
+					params: {
+						actor: did,
+						cursor: followCursor,
+					},
+				});
+
+				const data = response.data;
+
+				follows = follows.concat(data.follows);
+				followCursor = data.cursor;
+			} while (followCursor !== undefined);
+		}
+
+		{
+			const dids = follows.map((follow) => follow.did);
+			const chunks = chunked(dids, 30);
+
+			for (let i = 0, il = chunks.length; i < il; i++) {
+				setMessage(`Retrieving your follow relationships (${i + 1}/${il})`);
+
+				const chunk = chunks[i];
+
+				const response = await agent.rpc.get('app.bsky.graph.getRelationships', {
+					signal: signal,
+					params: {
+						actor: did,
+						others: chunk,
+					},
+				});
+
+				const relationships = response.data.relationships;
+				for (let j = 0, jl = relationships.length; j < jl; j++) {
+					const relation = relationships[j];
+
+					if (relation.$type === 'app.bsky.graph.defs#relationship') {
+						if (relation.followedBy && relation.following) {
+							mutuals.add(relation.did);
+						}
+					}
+				}
+			}
+		}
 
 		let acts: ProfileActivity[] = [];
 
@@ -89,6 +140,7 @@ const App = () => {
 
 			acts = acts.concat({
 				profile: profile,
+				mutuals: mutuals.has(profile.did),
 				// activityCount: activityCount,
 				lastActivity: lastActivity,
 			});
@@ -145,7 +197,7 @@ const App = () => {
 
 			<div class="profile-list">
 				<For each={activities()}>
-					{({ profile, lastActivity }) => {
+					{({ profile, mutuals, lastActivity }) => {
 						const url = `https://bsky.app/profile/${profile.did}`;
 
 						return (
@@ -160,17 +212,27 @@ const App = () => {
 									<p class="profile-name">{/* @once */ profile.displayName || `@${profile.handle}`}</p>
 									<div class="profile-subinfo">
 										<span class="profile-handle">@{/* @once */ profile.handle}</span>
-										<span class="dot">·</span>
+										<span aria-hidden="true" class="dot">
+											·
+										</span>
 
-										{
-											/* @once */ lastActivity !== undefined ? (
-												<span title={/* @once */ formatAbsDateTime(lastActivity)} class="profile-activity">
-													{/* @once */ formatReltime(lastActivity)}
+										{lastActivity !== undefined ? (
+											<span title={/* @once */ formatAbsDateTime(lastActivity)} class="profile-activity">
+												{/* @once */ formatReltime(lastActivity)}
+											</span>
+										) : (
+											<span class="profile-activity is-empty">no activity</span>
+										)}
+
+										{mutuals ? (
+											<>
+												<span aria-hidden="true" class="dot">
+													·
 												</span>
-											) : (
-												<span class="profile-activity is-empty">no activity</span>
-											)
-										}
+
+												<span class="profile-mutuals">mutuals</span>
+											</>
+										) : null}
 									</div>
 								</div>
 							</a>
@@ -183,3 +245,13 @@ const App = () => {
 };
 
 export default App;
+
+const chunked = <T,>(arr: T[], size: number): T[][] => {
+	const chunks: T[][] = [];
+
+	for (let i = 0, il = arr.length; i < il; i += size) {
+		chunks.push(arr.slice(i, i + size));
+	}
+
+	return chunks;
+};
