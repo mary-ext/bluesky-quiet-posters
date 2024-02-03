@@ -175,6 +175,9 @@ const App = () => {
 
 	return (
 		<div>
+			<small>
+				<a href="https://mary.my.id">« other bluesky stuff</a>
+			</small>
 			<h3>Bluesky quiet posters</h3>
 			<p>List of your follows sorted by least active</p>
 

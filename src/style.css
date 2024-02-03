@@ -54,7 +54,13 @@ hr {
 	color: transparent;
 }
 
+small {
+	font-size: 0.875rem;
+}
+
 a {
+	color: LinkText;
+	color: -webkit-link;
 	text-decoration: none;
 }
 a:hover {
@@ -105,8 +111,6 @@ a:hover {
 .profile-name {
 	margin: 0;
 	overflow: hidden;
-	color: LinkText;
-	color: -webkit-link;
 	font-weight: 700;
 	font-size: 16px;
 	line-height: 1.25;
