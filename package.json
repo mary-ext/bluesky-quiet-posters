@@ -10,11 +10,11 @@
 		"fmt": "prettier --cache --write ."
 	},
 	"dependencies": {
-		"@externdefs/bluesky-client": "^0.3.12",
-		"solid-js": "^1.8.12"
+		"@externdefs/bluesky-client": "^0.3.13",
+		"solid-js": "^1.8.14"
 	},
 	"devDependencies": {
-		"prettier": "^3.2.4",
+		"prettier": "^3.2.5",
 		"prettier-plugin-css-order": "^2.0.1",
 		"terser": "^5.27.0",
 		"typescript": "^5.3.3",
