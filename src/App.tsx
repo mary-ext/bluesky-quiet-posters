@@ -7,7 +7,7 @@ import { formatAbsDateTime, formatReltime } from './intl.ts';
 
 import defaultAvatar from './assets/default-avatar.svg';
 
-const agent = new Agent({ serviceUri: 'https://api.bsky.app' });
+const agent = new Agent({ serviceUri: 'https://public.api.bsky.app' });
 
 interface ProfileActivity {
 	profile: RefOf<'app.bsky.actor.defs#profileView'>;
