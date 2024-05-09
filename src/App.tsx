@@ -1,16 +1,16 @@
 import { For, createSignal } from 'solid-js';
 
-import { Agent } from '@externdefs/bluesky-client/agent';
-import type { RefOf } from '@externdefs/bluesky-client/atp-schema';
+import { BskyXRPC } from '@mary/bluesky-client';
+import type { AppBskyActorDefs } from '@mary/bluesky-client/lexicons';
 
 import { formatAbsDateTime, formatReltime } from './intl.ts';
 
 import defaultAvatar from './assets/default-avatar.svg';
 
-const agent = new Agent({ serviceUri: 'https://public.api.bsky.app' });
+const rpc = new BskyXRPC({ service: 'https://public.api.bsky.app' });
 
 interface ProfileActivity {
-	profile: RefOf<'app.bsky.actor.defs#profileView'>;
+	profile: AppBskyActorDefs.ProfileView;
 	mutuals: boolean;
 	// activityCount: number;
 	lastActivity: number | undefined;
@@ -31,7 +31,7 @@ const App = () => {
 
 	const go = async (handle: string, signal: AbortSignal) => {
 		let did: string;
-		let follows: RefOf<'app.bsky.actor.defs#profileView'>[] = [];
+		let follows: AppBskyActorDefs.ProfileView[] = [];
 		let mutuals = new Set<string>();
 
 		if (handle.startsWith('did:')) {
@@ -39,7 +39,7 @@ const App = () => {
 		} else {
 			setMessage(`Resolving your handle`);
 
-			const response = await agent.rpc.get('com.atproto.identity.resolveHandle', {
+			const response = await rpc.get('com.atproto.identity.resolveHandle', {
 				signal: signal,
 				params: {
 					handle: handle,
@@ -55,7 +55,7 @@ const App = () => {
 			do {
 				setMessage(`Retrieving your follows (${follows.length} users)`);
 
-				const response = await agent.rpc.get('app.bsky.graph.getFollows', {
+				const response = await rpc.get('app.bsky.graph.getFollows', {
 					signal: signal,
 					params: {
 						actor: did,
@@ -79,7 +79,7 @@ const App = () => {
 
 				const chunk = chunks[i];
 
-				const response = await agent.rpc.get('app.bsky.graph.getRelationships', {
+				const response = await rpc.get('app.bsky.graph.getRelationships', {
 					signal: signal,
 					params: {
 						actor: did,
@@ -107,7 +107,7 @@ const App = () => {
 
 			setMessage(`Retrieving @${profile.handle} (${idx + 1}/${len})`);
 
-			const response = await agent.rpc.get('app.bsky.feed.getAuthorFeed', {
+			const response = await rpc.get('app.bsky.feed.getAuthorFeed', {
 				signal: signal,
 				params: {
 					actor: profile.did,

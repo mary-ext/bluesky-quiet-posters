@@ -11,7 +11,7 @@
 		"fmt": "prettier --cache --write ."
 	},
 	"dependencies": {
-		"@externdefs/bluesky-client": "^0.3.14",
+		"@mary/bluesky-client": "npm:@jsr/mary__bluesky-client@^0.5.13",
 		"solid-js": "^1.8.17"
 	},
 	"devDependencies": {
