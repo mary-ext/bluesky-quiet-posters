@@ -1,13 +1,19 @@
 lockfileVersion: '9.0'
 
 settings:
-  autoInstallPeers: false
+  autoInstallPeers: true
   excludeLinksFromLockfile: false
 
 importers:
 
   .:
     dependencies:
+      '@atcute/bluesky':
+        specifier: ^1.0.5
+        version: 1.0.5(@atcute/client@2.0.0)
+      '@atcute/client':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@mary/bluesky-client':
         specifier: npm:@jsr/mary__bluesky-client@^0.5.13
         version: '@jsr/mary__bluesky-client@0.5.13'
@@ -39,6 +45,14 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@atcute/bluesky@1.0.5':
+    resolution: {integrity: sha512-QMXJ11dccty6hC6OoIgOrsd+R1EE3XmVc0irY7+jdBrVui6A/WwzrtvUPXgVXHuFvLm/+ZY/HJY4scSk4oQQVg==}
+    peerDependencies:
+      '@atcute/client': ^1.0.0 || ^2.0.0
+
+  '@atcute/client@2.0.0':
+    resolution: {integrity: sha512-ifbYegz/4mUCqByz1G9msDcOJaIxnh0z6z8GPwlqNM9VUhQc/tEsJl7R6eeDp1DKonzhL+fQ//6OMY7w/tzTYw==}
 
   '@babel/code-frame@7.24.2':
     resolution: {integrity: sha512-y5+tLQyV8pg3fsiln67BVLD1P13Eg4lh5RW9mF0zUuvLrv9uIQ4MCL+CRT+FTsBlBjcIan6PGsLcBN0m3ClUyQ==}
@@ -683,6 +697,12 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@atcute/bluesky@1.0.5(@atcute/client@2.0.0)':
+    dependencies:
+      '@atcute/client': 2.0.0
+
+  '@atcute/client@2.0.0': {}
 
   '@babel/code-frame@7.24.2':
     dependencies:

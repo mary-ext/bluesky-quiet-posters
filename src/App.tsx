@@ -1,13 +1,13 @@
 import { For, createSignal } from 'solid-js';
 
-import { BskyXRPC } from '@mary/bluesky-client';
-import type { AppBskyActorDefs } from '@mary/bluesky-client/lexicons';
+import { XRPC, simpleFetchHandler } from '@atcute/client';
+import type { AppBskyActorDefs } from '@atcute/client/lexicons';
 
 import { formatAbsDateTime, formatReltime } from './intl.ts';
 
 import defaultAvatar from './assets/default-avatar.svg';
 
-const rpc = new BskyXRPC({ service: 'https://public.api.bsky.app' });
+const rpc = new XRPC({ handler: simpleFetchHandler({ service: 'https://public.api.bsky.app' }) });
 
 interface ProfileActivity {
 	profile: AppBskyActorDefs.ProfileView;
