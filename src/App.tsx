@@ -187,7 +187,7 @@ const App = () => {
 					name="handle"
 					required
 					placeholder="example.bsky.social"
-					pattern="@?([a-zA-Z0-9\\-]+(?:\\.[a-zA-Z0-9\\-]+)*(?:\\.[a-zA-Z]+))|did:[a-z]+:[a-zA-Z0-9._\\-]+"
+					pattern="@?[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*(?:\.[a-zA-Z]{2,})|did:[a-z]+:[a-zA-Z0-9._:%\-]*[a-zA-Z0-9._\-]"
 					title="Bluesky handle or DID"
 				/>
 
