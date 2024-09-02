@@ -13,15 +13,14 @@
 	"dependencies": {
 		"@atcute/bluesky": "^1.0.5",
 		"@atcute/client": "^2.0.0",
-		"@mary/bluesky-client": "npm:@jsr/mary__bluesky-client@^0.5.13",
-		"solid-js": "^1.8.17"
+		"solid-js": "^1.8.22"
 	},
 	"devDependencies": {
-		"prettier": "^3.2.5",
+		"prettier": "^3.3.3",
 		"prettier-plugin-css-order": "^2.1.2",
-		"terser": "^5.31.0",
-		"typescript": "^5.4.5",
-		"vite": "^5.2.11",
+		"terser": "^5.31.6",
+		"typescript": "^5.5.4",
+		"vite": "^5.4.2",
 		"vite-plugin-solid": "^2.10.2"
 	}
 }
