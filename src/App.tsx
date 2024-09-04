@@ -30,9 +30,11 @@ const App = () => {
 	const [activities, setActivities] = createSignal<ProfileActivity[]>(EMPTY_ARRAY);
 
 	const go = async (handle: string, signal: AbortSignal) => {
+		const q = new PromiseQueue({ max: 3 });
+		const mutuals = new Set<string>();
+
 		let did: string;
 		let follows: AppBskyActorDefs.ProfileView[] = [];
-		let mutuals = new Set<string>();
 
 		if (handle.startsWith('did:')) {
 			did = handle;
@@ -49,12 +51,11 @@ const App = () => {
 			did = response.data.did;
 		}
 
+		setMessage(`Retrieving your follows`);
 		{
 			let followCursor: string | undefined;
 
 			do {
-				setMessage(`Retrieving your follows (${follows.length} users)`);
-
 				const response = await rpc.get('app.bsky.graph.getFollows', {
 					signal: signal,
 					params: {
@@ -67,86 +68,100 @@ const App = () => {
 
 				follows = follows.concat(data.follows);
 				followCursor = data.cursor;
+
+				setMessage(`Retrieving your follows (${follows.length} users)`);
 			} while (followCursor !== undefined);
 		}
 
+		setMessage(`Retrieving your follow relationships`);
 		{
+			let count = 0;
+
 			const dids = follows.map((follow) => follow.did);
 			const chunks = chunked(dids, 30);
 
-			for (let i = 0, il = chunks.length; i < il; i++) {
-				setMessage(`Retrieving your follow relationships (${i + 1}/${il})`);
+			await Promise.all(
+				chunks.map((chunk) => {
+					return q.add(async () => {
+						const { data } = await rpc.get('app.bsky.graph.getRelationships', {
+							signal: signal,
+							params: {
+								actor: did,
+								others: chunk,
+							},
+						});
 
-				const chunk = chunks[i];
+						const relationships = data.relationships;
 
-				const response = await rpc.get('app.bsky.graph.getRelationships', {
-					signal: signal,
-					params: {
-						actor: did,
-						others: chunk,
-					},
-				});
-
-				const relationships = response.data.relationships;
-				for (let j = 0, jl = relationships.length; j < jl; j++) {
-					const relation = relationships[j];
-
-					if (relation.$type === 'app.bsky.graph.defs#relationship') {
-						if (relation.followedBy && relation.following) {
-							mutuals.add(relation.did);
+						for (let j = 0, jl = relationships.length; j < jl; j++) {
+							const relation = relationships[j];
+							if (relation.$type === 'app.bsky.graph.defs#relationship') {
+								if (relation.followedBy && relation.following) {
+									mutuals.add(relation.did);
+								}
+							}
 						}
-					}
-				}
-			}
+
+						count += chunk.length;
+						setMessage(`Retrieving your follow relationships (${count}/${dids.length})`);
+					});
+				}),
+			);
 		}
 
-		let acts: ProfileActivity[] = [];
+		setMessage(`Retrieving user feed`);
+		{
+			let count = 0;
+			let acts: ProfileActivity[] = [];
 
-		for (let idx = 0, len = follows.length; idx < len; idx++) {
-			const profile = follows[idx];
+			await Promise.all(
+				follows.map((profile) => {
+					return q.add(async () => {
+						const { data } = await rpc.get('app.bsky.feed.getAuthorFeed', {
+							signal: signal,
+							params: {
+								actor: profile.did,
+								limit: 1,
+							},
+						});
 
-			setMessage(`Retrieving @${profile.handle} (${idx + 1}/${len})`);
+						const feed = data.feed;
 
-			const response = await rpc.get('app.bsky.feed.getAuthorFeed', {
-				signal: signal,
-				params: {
-					actor: profile.did,
-					// limit: ACTIVITY_LIMIT + 1,
-					limit: 1,
-				},
-			});
+						// let activityCount = 0;
+						let lastActivity: number | undefined;
 
-			const feed = response.data.feed;
-			// const now = new Date();
+						for (let idx = 0, len = feed.length; idx < len; idx++) {
+							const { post, reason } = feed[idx];
 
-			// let activityCount = 0;
-			let lastActivity: number | undefined;
+							const date = new Date(reason ? reason.indexedAt : post.indexedAt);
 
-			for (let idx = 0, len = feed.length; idx < len; idx++) {
-				const { post, reason } = feed[idx];
+							// if (
+							// 	now.getDate() === date.getDate() &&
+							// 	now.getMonth() === date.getMonth() &&
+							// 	now.getFullYear() === date.getFullYear()
+							// ) {
+							// 	activityCount++;
+							// }
 
-				const date = new Date(reason ? reason.indexedAt : post.indexedAt);
+							lastActivity ??= date.getTime();
+						}
 
-				// if (
-				// 	now.getDate() === date.getDate() &&
-				// 	now.getMonth() === date.getMonth() &&
-				// 	now.getFullYear() === date.getFullYear()
-				// ) {
-				// 	activityCount++;
-				// }
+						count++;
 
-				lastActivity ??= date.getTime();
-			}
+						acts = acts.concat({
+							profile: profile,
+							mutuals: mutuals.has(profile.did),
+							// activityCount: activityCount,
+							lastActivity: lastActivity,
+						});
 
-			acts = acts.concat({
-				profile: profile,
-				mutuals: mutuals.has(profile.did),
-				// activityCount: activityCount,
-				lastActivity: lastActivity,
-			});
-			acts.sort(sortProfileActivities);
+						acts.sort(sortProfileActivities);
 
-			setActivities(acts);
+						setMessage(`Retrieving user feed (${count}/${follows.length})`);
+						setActivities(acts);
+					});
+				}),
+			);
 		}
 
 		setMessage(undefined);
@@ -258,3 +273,48 @@ const chunked = <T,>(arr: T[], size: number): T[][] => {
 
 	return chunks;
 };
+
+class PromiseQueue {
+	#queue: { deferred: PromiseWithResolvers<any>; fn: () => any }[] = [];
+
+	#max: number;
+	#current = 0;
+
+	constructor({ max = 8 }: { max?: number } = {}) {
+		this.#max = max;
+	}
+
+	add<T>(fn: () => Promise<T>): Promise<T> {
+		const deferred = Promise.withResolvers<T>();
+
+		this.#queue.push({ deferred, fn });
+		this.#run();
+
+		return deferred.promise;
+	}
+
+	#run() {
+		if (this.#queue.length > 0 && this.#current <= this.#max) {
+			const { deferred, fn } = this.#queue.shift()!;
+			this.#current++;
+
+			const promise = new Promise((r) => r(fn()));
+
+			const done = () => {
+				this.#current--;
+				this.#run();
+			};
+
+			promise.then(
+				(res) => {
+					done();
+					deferred.resolve(res);
+				},
+				(err) => {
+					done();
+					deferred.reject(err);
+				},
+			);
+		}
+	}
+}
