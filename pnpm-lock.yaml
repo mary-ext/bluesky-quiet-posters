@@ -31,11 +31,11 @@ importers:
         specifier: ^5.5.4
         version: 5.5.4
       vite:
-        specifier: ^5.4.2
-        version: 5.4.2(terser@5.31.6)
+        specifier: ^5.4.3
+        version: 5.4.3(terser@5.31.6)
       vite-plugin-solid:
         specifier: ^2.10.2
-        version: 2.10.2(solid-js@1.8.22)(vite@5.4.2(terser@5.31.6))
+        version: 2.10.2(solid-js@1.8.22)(vite@5.4.3(terser@5.31.6))
 
 packages:
 
@@ -525,8 +525,8 @@ packages:
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
 
-  picocolors@1.0.1:
-    resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
+  picocolors@1.1.0:
+    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
   postcss-less@6.0.0:
     resolution: {integrity: sha512-FPX16mQLyEjLzEuuJtxA8X3ejDLNGGEG503d2YGZR5Ask1SpDN8KmZUMpzCvyalWRywAn1n1VOA5dcqfCLo5rg==}
@@ -630,8 +630,8 @@ packages:
       '@testing-library/jest-dom':
         optional: true
 
-  vite@5.4.2:
-    resolution: {integrity: sha512-dDrQTRHp5C1fTFzcSaMxjk6vdpKvT+2/mIdE07Gw2ykehT49O0z/VHS3zZ8iV/Gh8BJJKHWOe5RjaNrW5xf/GA==}
+  vite@5.4.3:
+    resolution: {integrity: sha512-IH+nl64eq9lJjFqU+/yrRnrHPVTlgy42/+IzbOdaFDVlyLgI/wDlf+FCobXLX1cT0X5+7LMyH1mIy2xJdLfo8Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -688,7 +688,7 @@ snapshots:
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
-      picocolors: 1.0.1
+      picocolors: 1.1.0
 
   '@babel/compat-data@7.25.4': {}
 
@@ -773,7 +773,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.0.1
+      picocolors: 1.1.0
 
   '@babel/parser@7.25.6':
     dependencies:
@@ -1092,7 +1092,7 @@ snapshots:
 
   node-releases@2.0.18: {}
 
-  picocolors@1.0.1: {}
+  picocolors@1.1.0: {}
 
   postcss-less@6.0.0(postcss@8.4.44):
     dependencies:
@@ -1105,7 +1105,7 @@ snapshots:
   postcss@8.4.44:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.0.1
+      picocolors: 1.1.0
       source-map-js: 1.2.0
 
   prettier-plugin-css-order@2.1.2(postcss@8.4.44)(prettier@3.3.3):
@@ -1192,11 +1192,11 @@ snapshots:
     dependencies:
       browserslist: 4.23.3
       escalade: 3.2.0
-      picocolors: 1.0.1
+      picocolors: 1.1.0
 
   validate-html-nesting@1.2.2: {}
 
-  vite-plugin-solid@2.10.2(solid-js@1.8.22)(vite@5.4.2(terser@5.31.6)):
+  vite-plugin-solid@2.10.2(solid-js@1.8.22)(vite@5.4.3(terser@5.31.6)):
     dependencies:
       '@babel/core': 7.25.2
       '@types/babel__core': 7.20.5
@@ -1204,12 +1204,12 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.8.22
       solid-refresh: 0.6.3(solid-js@1.8.22)
-      vite: 5.4.2(terser@5.31.6)
-      vitefu: 0.2.5(vite@5.4.2(terser@5.31.6))
+      vite: 5.4.3(terser@5.31.6)
+      vitefu: 0.2.5(vite@5.4.3(terser@5.31.6))
     transitivePeerDependencies:
       - supports-color
 
-  vite@5.4.2(terser@5.31.6):
+  vite@5.4.3(terser@5.31.6):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.44
@@ -1218,8 +1218,8 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.6
 
-  vitefu@0.2.5(vite@5.4.2(terser@5.31.6)):
+  vitefu@0.2.5(vite@5.4.3(terser@5.31.6)):
     optionalDependencies:
-      vite: 5.4.2(terser@5.31.6)
+      vite: 5.4.3(terser@5.31.6)
 
   yallist@3.1.1: {}

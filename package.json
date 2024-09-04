@@ -20,7 +20,7 @@
 		"prettier-plugin-css-order": "^2.1.2",
 		"terser": "^5.31.6",
 		"typescript": "^5.5.4",
-		"vite": "^5.4.2",
+		"vite": "^5.4.3",
 		"vite-plugin-solid": "^2.10.2"
 	}
 }
