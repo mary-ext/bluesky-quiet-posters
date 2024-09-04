@@ -53,24 +53,24 @@ const App = () => {
 
 		setMessage(`Retrieving your follows`);
 		{
-			let followCursor: string | undefined;
+			let cursor: string | undefined;
 
 			do {
 				const response = await rpc.get('app.bsky.graph.getFollows', {
 					signal: signal,
 					params: {
 						actor: did,
-						cursor: followCursor,
+						cursor: cursor,
 					},
 				});
 
 				const data = response.data;
 
 				follows = follows.concat(data.follows);
-				followCursor = data.cursor;
+				cursor = data.cursor;
 
 				setMessage(`Retrieving your follows (${follows.length} users)`);
-			} while (followCursor !== undefined);
+			} while (cursor !== undefined);
 		}
 
 		setMessage(`Retrieving your follow relationships`);
