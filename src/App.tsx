@@ -61,6 +61,7 @@ const App = () => {
 					params: {
 						actor: did,
 						cursor: cursor,
+						limit: 100,
 					},
 				});
 
