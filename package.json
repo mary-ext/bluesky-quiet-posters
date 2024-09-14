@@ -11,16 +11,16 @@
 		"fmt": "prettier --cache --write ."
 	},
 	"dependencies": {
-		"@atcute/bluesky": "^1.0.5",
-		"@atcute/client": "^2.0.0",
+		"@atcute/bluesky": "^1.0.6",
+		"@atcute/client": "^2.0.1",
 		"solid-js": "^1.8.22"
 	},
 	"devDependencies": {
 		"prettier": "^3.3.3",
 		"prettier-plugin-css-order": "^2.1.2",
-		"terser": "^5.31.6",
-		"typescript": "^5.5.4",
-		"vite": "^5.4.3",
+		"terser": "^5.32.0",
+		"typescript": "~5.6.2",
+		"vite": "^5.4.5",
 		"vite-plugin-solid": "^2.10.2"
 	}
 }
