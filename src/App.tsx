@@ -30,9 +30,6 @@ const App = () => {
 	const [activities, setActivities] = createSignal<ProfileActivity[]>(EMPTY_ARRAY);
 
 	const go = async (handle: string, signal: AbortSignal) => {
-		const q = new PromiseQueue({ max: 3 });
-		const mutuals = new Set<string>();
-
 		let did: string;
 		let follows: AppBskyActorDefs.ProfileView[] = [];
 
@@ -73,6 +70,9 @@ const App = () => {
 				setMessage(`Retrieving your follows (${follows.length} users)`);
 			} while (cursor !== undefined);
 		}
+
+		const q = new PromiseQueue({ max: follows.length <= 1_000 ? 3 : 1 });
+		const mutuals = new Set<string>();
 
 		setMessage(`Retrieving your follow relationships`);
 		{
